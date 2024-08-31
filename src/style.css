@@ -12,3 +12,14 @@ html,body {
   text-align: center;
   background-color: #d8d8d8;
 }
+
+.pieces{
+  display: grid;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 40px;
+  background: url(./assets/img/piecesbg.png) center/100% 100%;
+}
