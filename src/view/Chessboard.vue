@@ -1,8 +1,15 @@
 <template>
-  <div class="chessboard">
+  <div class="chessboard" @mouseleave="gridPosition = null">
     <div class="across" v-for="(across, i) in points" :key="i">
-      <div class="point" :x="j" :y="i" v-for="(point, j) in across" :key="j">
-        <component v-if="point.componentName" :side="point" :is="getComponent(point.componentName)" ></component>
+      <div class="point" :x="j" :y="i" v-for="(point, j) in across" :key="j"
+        @click="checkChessPieces({x:j,y:i},$event)"
+        @mouseenter="checkGrid({x:j,y:i})"
+      >
+        <component
+        v-if="point.componentName" 
+        :pieces="point" 
+        :is="getComponent(point.componentName)" >
+        </component>
       </div>
     </div>
   </div>
@@ -10,20 +17,92 @@
 
 
 <script setup>
-import { ref, defineAsyncComponent  } from "vue";
+import { ref, defineAsyncComponent } from "vue";
 
 defineProps({
   msg: String,
 });
 
+// 象棋棋盘  0为黑  1为红
+const points = ref(APPCONFIG.position);
+
+// 获取组件
 const getComponent = (componentName) => {
   return defineAsyncComponent(() =>
     import(`@/components/ChessPieces/${componentName}/index.vue`)
   );
 }
 
-// 象棋棋盘  0为黑  1为红
-const points = ref(APPCONFIG.position);
+// 鼠标所在格子
+const cPosition = ref(null)
+const checkGrid = (position) => {
+  console.log("🚀 ~ checkGrid ~ position:", position)
+  cPosition.value = position;
+}
+// 选中棋子的格子
+const oPosition = ref(null)
+// 选中的棋子的dom元素
+const chessPieces = ref(null)
+
+const checkChessPieces = (position,e) => {
+  if(chessPieces.value === null && e.target.className.includes("point")){
+    e.preventDefault();
+    return;
+  }
+  if(chessPieces.value === null){
+    chessPieces.value = e.target;
+    oPosition.value = position;
+    changeCheckPiecesStyle(true)
+    // 添加事件监听器
+    document.addEventListener('mousemove', piecesMouseMove);
+  }else{
+    moveAPiece(cPosition.value,oPosition.value)
+    changeCheckPiecesStyle(false)
+    chessPieces.value = null
+
+    // 移除事件监听器
+    document.removeEventListener('mousemove', piecesMouseMove);
+  }
+}
+
+/**
+ * 移动棋子到新位置
+ * @param c 当前鼠标所在的格子位置 {x: number, y: number}
+ * @param o 棋子原来所在的格子位置 {x: number, y: number}
+ */
+const moveAPiece = (c,o) => {
+  const piece = JSON.parse(JSON.stringify(points.value[o.y][o.x]));
+  if(pieceMovementRules(c,o)){
+    points.value[c.y][c.x] = piece
+    delete points.value[o.y][o.x].componentName
+  }
+}
+
+// TODO 移动棋子的规则 未完成
+const pieceMovementRules = (c, o) => {
+  let flag = false;
+  flag = c !==null && (c.x !== o.x || c.y !== o.y);
+  return flag;
+}
+
+
+const piecesMouseMove = (event) => {
+  chessPieces.value.style.top = event.clientY - 50 + "px";
+  chessPieces.value.style.left = event.clientX - 45 + "px";
+}
+
+const changeCheckPiecesStyle = (flag) => {
+  if(flag){
+    chessPieces.value.style.position =  "fixed"
+    chessPieces.value.style.pointerEvents = "none";
+  }else{
+    chessPieces.value.style.position = "static"
+    chessPieces.value.style.top = "auto";
+    chessPieces.value.style.left = "auto";
+    chessPieces.value.style.pointerEvents = "auto";
+  }
+}
+
 
 </script>
 
@@ -41,6 +120,7 @@ const points = ref(APPCONFIG.position);
   justify-content: space-around;
 }
 .point {
+  position: relative;
   height: 90px;
   width: 100px;
 }

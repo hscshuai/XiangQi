@@ -1,5 +1,5 @@
 <template>
-  <Pieces :side="config"></Pieces>
+  <Pieces :pieces="config"></Pieces>
 </template>
 
 <script setup>
@@ -7,14 +7,14 @@ import { ref } from 'vue'
 import Pieces from '../Pieces.vue';
 
 const props = defineProps({
-  side: Object,
+  pieces: Object,
 })
 
 let name = ref("马")
 
 const config = {
   name,
-  ...props.side
+  ...props.pieces
 }
 
 

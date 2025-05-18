@@ -1,6 +1,6 @@
 <template>
   <div class="pieces" :style="{color: color}">
-    {{ side.name }}
+    {{ pieces.name }}
   </div>
 </template>
 
@@ -8,11 +8,11 @@
 import { ref } from 'vue'
 
 const props = defineProps({
-  side: Object,
+  pieces: Object,
 })
 
 let color = ref("red")
-if( props.side.type === 0){
+if( props.pieces.side === 0){
   color = ref("black")
 }
 

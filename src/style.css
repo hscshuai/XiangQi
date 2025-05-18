@@ -15,11 +15,12 @@ html,body {
 
 .pieces{
   display: grid;
-  height: 100%;
-  width: 100%;
+  height: 90px;
+  width: 100px;
   text-align: center;
   align-items: center;
   border-radius: 50%;
   font-size: 40px;
   background: url(./assets/img/piecesbg.png) center/100% 100%;
+  cursor: pointer;
 }
