@@ -2,7 +2,7 @@
   <div class="chessboard" @mouseleave="gridPosition = null">
     <div class="across" v-for="(across, i) in points" :key="i">
       <div class="point" :x="j" :y="i" v-for="(point, j) in across" :key="j"
-        @click="checkChessPieces({x:j,y:i},$event)"
+        @click="checkChessPieces({x:j,y:i}, $event)"
         @mouseenter="checkGrid({x:j,y:i})"
       >
         <component
@@ -18,6 +18,7 @@
 
 <script setup>
 import { ref, defineAsyncComponent } from "vue";
+import ChessRules from "@/utils/ChessRules.js";
 
 defineProps({
   msg: String,
@@ -56,7 +57,7 @@ const checkChessPieces = (position,e) => {
     // 添加事件监听器
     document.addEventListener('mousemove', piecesMouseMove);
   }else{
-    moveAPiece(cPosition.value,oPosition.value)
+    moveAPiece(cPosition.value, oPosition.value)
     changeCheckPiecesStyle(false)
     chessPieces.value = null
 
@@ -72,17 +73,19 @@ const checkChessPieces = (position,e) => {
  */
 const moveAPiece = (c,o) => {
   const piece = JSON.parse(JSON.stringify(points.value[o.y][o.x]));
-  if(pieceMovementRules(c,o)){
+  if(pieceMovementRules(piece,c,o)){
     points.value[c.y][c.x] = piece
     delete points.value[o.y][o.x].componentName
   }
 }
 
 // TODO 移动棋子的规则 未完成
-const pieceMovementRules = (c, o) => {
-  let flag = false;
-  flag = c !==null && (c.x !== o.x || c.y !== o.y);
-  return flag;
+const pieceMovementRules = (piece, c, o) => {
+  // 移动的格子位置不能和原来的格子位置相同
+  const flag = c !== null && (c.x !== o.x || c.y !== o.y);
+  if(!flag) return flag;
+  // 判断棋子的移动是否符合规则
+  return ChessRules[piece.componentName + "Rule"](piece, c, o);
 }
 
 
