@@ -10,9 +10,9 @@ const props = defineProps({
   pieces: Object,
 })
 
-let name = ref("士")
-if( props.pieces.side === 0){
-  name.value = "仕"
+let name = ref("仕")
+if( props.pieces.chess.side === 1){
+  name.value = "士"
 }
 
 const config = {

@@ -11,7 +11,7 @@ const props = defineProps({
 })
 
 let name = ref("帅")
-if( props.pieces.side === 0){
+if( props.pieces.chess.side === 1){
   name.value = "将"
 }
 

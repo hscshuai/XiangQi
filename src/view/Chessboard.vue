@@ -6,9 +6,9 @@
         @mouseenter="checkGrid({x:j,y:i})"
       >
         <component
-        v-if="point.componentName" 
+        v-if="point.chess" 
         :pieces="point" 
-        :is="getComponent(point.componentName)" >
+        :is="getComponent(point.chess.componentName)" >
         </component>
       </div>
     </div>
@@ -74,8 +74,8 @@ const checkChessPieces = (position,e) => {
 const moveAPiece = (c,o) => {
   const piece = JSON.parse(JSON.stringify(points.value[o.y][o.x]));
   if(pieceMovementRules(piece,c,o)){
-    points.value[c.y][c.x] = piece
-    delete points.value[o.y][o.x].componentName
+    points.value[c.y][c.x].chess = piece.chess
+    delete points.value[o.y][o.x].chess
   }
 }
 
@@ -85,7 +85,7 @@ const pieceMovementRules = (piece, c, o) => {
   const flag = c !== null && (c.x !== o.x || c.y !== o.y);
   if(!flag) return flag;
   // 判断棋子的移动是否符合规则
-  return ChessRules[piece.componentName + "Rule"](piece, c, o);
+  return ChessRules[piece.chess.componentName + "Rule"](piece, c, o);
 }
 
 

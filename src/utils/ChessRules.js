@@ -102,8 +102,9 @@ class ChessRules {
 
   // 兵/卒的移动规则
   static BingRule(piece, fromPos, toPos) {
+    debugger
     // 判断是哪一方的兵
-    const forward = piece.side === 0;
+    const forward = piece.chess.side === 0;
     return false;
     
     // 未过河只能向前

@@ -12,7 +12,7 @@ const props = defineProps({
 })
 
 let color = ref("red")
-if( props.pieces.side === 0){
+if( props.pieces.chess.side === 1){
   color = ref("black")
 }
 
