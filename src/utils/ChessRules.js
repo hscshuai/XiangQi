@@ -1,6 +1,7 @@
 class ChessRules {
   // 将/帅的移动规则
   static generalRule(fromPos, toPos) {
+    return true;
     // 只能在九宫格内移动
     if (toPos.x < 3 || toPos.x > 5) return false;
     if (fromPos.y <= 4 && toPos.y > 4) return false;
@@ -12,6 +13,7 @@ class ChessRules {
 
   // 士/仕的移动规则
   static advisorRule(fromPos, toPos) {
+    return true;
     // 只能在九宫格内移动
     if (toPos.x < 3 || toPos.x > 5) return false;
     if (fromPos.y <= 4 && toPos.y > 4) return false;
@@ -23,6 +25,7 @@ class ChessRules {
 
   // 象/相的移动规则
   static elephantRule(fromPos, toPos, board) {
+    return true;
     // 不能过河
     if (fromPos.y <= 4 && toPos.y > 4) return false;
     if (fromPos.y > 4 && toPos.y <= 4) return false;
@@ -38,6 +41,7 @@ class ChessRules {
 
   // 马的移动规则
   static horseRule(fromPos, toPos, board) {
+    return true;
     const deltaX = Math.abs(fromPos.x - toPos.x);
     const deltaY = Math.abs(fromPos.y - toPos.y);
     
@@ -56,6 +60,7 @@ class ChessRules {
 
   // 车的移动规则
   static JuRule(fromPos, toPos, board) {
+    return true;
     if (fromPos.x !== toPos.x && fromPos.y !== toPos.y) return false;
     
     // 检查路径上是否有其他棋子
@@ -101,22 +106,29 @@ class ChessRules {
   }
 
   // 兵/卒的移动规则
-  static BingRule(piece, fromPos, toPos) {
-    debugger
-    // 判断是哪一方的兵
-    const forward = piece.chess.side === 0;
-    return false;
-    
-    // 未过河只能向前
-    if ((piece && fromPos.y > 4) || (!piece && fromPos.y <= 4)) {
-      return toPos.x === fromPos.x && toPos.y - fromPos.y === forward;
+  static BingRule(piece, toPos, fromPos) {
+    // 未过河
+    if(piece.side === piece.chess.side){
+      // 过河前棋子不能左右走
+      if(toPos.x !== fromPos.x ){
+        return false;
+      }
+      // 棋子只能向前走
+      if(toPos.y - fromPos.y !== piece.chess.side){
+        return false;
+      }
+    // 已过河
+    }else {
+      // 过河后棋子可以向左或向右走一步
+      if(Math.abs(toPos.x - fromPos.x) !== 1 && Math.abs(toPos.x - fromPos.x) !== 0 ){
+        return false;
+      }
+      // 棋子不能后退
+      if(((toPos.y - fromPos.y) !== piece.chess.side) && ((toPos.y - fromPos.y) !== 0) ){
+        return false;
+      }
     }
-    
-    // 过河后可以向前或左右
-    if (toPos.y - fromPos.y === forward && toPos.x === fromPos.x) return true;
-    if (toPos.y === fromPos.y && Math.abs(toPos.x - fromPos.x) === 1) return true;
-    
-    return false;
+    return true;
   }
 
 }

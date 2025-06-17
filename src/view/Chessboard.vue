@@ -72,20 +72,27 @@ const checkChessPieces = (position,e) => {
  * @param o 棋子原来所在的格子位置 {x: number, y: number}
  */
 const moveAPiece = (c,o) => {
-  const piece = JSON.parse(JSON.stringify(points.value[o.y][o.x]));
-  if(pieceMovementRules(piece,c,o)){
-    points.value[c.y][c.x].chess = piece.chess
+  const oPiece = JSON.parse(JSON.stringify(points.value[o.y][o.x]));
+  const cPiece = JSON.parse(JSON.stringify(points.value[c.y][c.x]));
+  if(pieceMovementRules(cPiece,oPiece,c,o)){
+    points.value[c.y][c.x].chess = oPiece.chess
     delete points.value[o.y][o.x].chess
   }
 }
 
 // TODO 移动棋子的规则 未完成
-const pieceMovementRules = (piece, c, o) => {
+const pieceMovementRules = (cPiece,oPiece, c, o) => {
   // 移动的格子位置不能和原来的格子位置相同
-  const flag = c !== null && (c.x !== o.x || c.y !== o.y);
+  let flag = (c !== null && (c.x !== o.x || c.y !== o.y));
   if(!flag) return flag;
+  // 不能吃同阵营的棋子
+  if(cPiece.hasOwnProperty("chess") && oPiece.hasOwnProperty("chess")){
+    debugger
+    flag = (cPiece.chess.side !== oPiece.chess.side)
+    if(!flag) return flag;
+  }
   // 判断棋子的移动是否符合规则
-  return ChessRules[piece.chess.componentName + "Rule"](piece, c, o);
+  return ChessRules[oPiece.chess.componentName + "Rule"](oPiece, c, o);
 }
 
 
