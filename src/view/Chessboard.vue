@@ -1,6 +1,6 @@
 <template>
   <div class="chessboard" @mouseleave="gridPosition = null">
-    <div class="across" v-for="(across, i) in points" :key="i">
+    <div class="across" v-for="(across, i) in board" :key="i">
       <div class="point" :x="j" :y="i" v-for="(point, j) in across" :key="j"
         @click="checkChessPieces({x:j,y:i}, $event)"
         @mouseenter="checkGrid({x:j,y:i})"
@@ -24,8 +24,8 @@ defineProps({
   msg: String,
 });
 
-// 象棋棋盘  0为黑  1为红
-const points = ref(APPCONFIG.position);
+// 象棋棋盘
+const board = ref(APPCONFIG.position);
 
 // 获取组件
 const getComponent = (componentName) => {
@@ -37,7 +37,7 @@ const getComponent = (componentName) => {
 // 鼠标所在格子
 const cPosition = ref(null)
 const checkGrid = (position) => {
-  console.log("🚀 ~ checkGrid ~ position:", position)
+  // console.log("🚀 ~ checkGrid ~ position:", position)
   cPosition.value = position;
 }
 // 选中棋子的格子
@@ -72,11 +72,11 @@ const checkChessPieces = (position,e) => {
  * @param o 棋子原来所在的格子位置 {x: number, y: number}
  */
 const moveAPiece = (c,o) => {
-  const oPiece = JSON.parse(JSON.stringify(points.value[o.y][o.x]));
-  const cPiece = JSON.parse(JSON.stringify(points.value[c.y][c.x]));
+  const oPiece = JSON.parse(JSON.stringify(board.value[o.y][o.x]));
+  const cPiece = JSON.parse(JSON.stringify(board.value[c.y][c.x]));
   if(pieceMovementRules(cPiece,oPiece,c,o)){
-    points.value[c.y][c.x].chess = oPiece.chess
-    delete points.value[o.y][o.x].chess
+    board.value[c.y][c.x].chess = oPiece.chess
+    delete board.value[o.y][o.x].chess
   }
 }
 
@@ -87,12 +87,11 @@ const pieceMovementRules = (cPiece,oPiece, c, o) => {
   if(!flag) return flag;
   // 不能吃同阵营的棋子
   if(cPiece.hasOwnProperty("chess") && oPiece.hasOwnProperty("chess")){
-    debugger
     flag = (cPiece.chess.side !== oPiece.chess.side)
     if(!flag) return flag;
   }
   // 判断棋子的移动是否符合规则
-  return ChessRules[oPiece.chess.componentName + "Rule"](oPiece, c, o);
+  return ChessRules[oPiece.chess.componentName + "Rule"](board.value, c, o);
 }
 
 

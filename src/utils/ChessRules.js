@@ -59,62 +59,57 @@ class ChessRules {
   }
 
   // 车的移动规则
-  static JuRule(fromPos, toPos, board) {
-    return true;
+  static JuRule(board, toPos, fromPos) {
     if (fromPos.x !== toPos.x && fromPos.y !== toPos.y) return false;
-    
     // 检查路径上是否有其他棋子
     if (fromPos.x === toPos.x) {
       const minY = Math.min(fromPos.y, toPos.y);
       const maxY = Math.max(fromPos.y, toPos.y);
       for (let y = minY + 1; y < maxY; y++) {
-        if (board[y][fromPos.x]) return false;
+        if (board[y][fromPos.x].hasOwnProperty("chess")) return false;
       }
     } else {
       const minX = Math.min(fromPos.x, toPos.x);
       const maxX = Math.max(fromPos.x, toPos.x);
       for (let x = minX + 1; x < maxX; x++) {
-        if (board[fromPos.y][x]) return false;
+        if (board[fromPos.y][x].hasOwnProperty("chess")) return false;
       }
     }
     return true;
   }
 
   // 炮的移动规则
-  static PaoRule(fromPos, toPos, board) {
-    return true;
+  static PaoRule(board, toPos, fromPos) {
     if (fromPos.x !== toPos.x && fromPos.y !== toPos.y) return false;
-    
     let count = 0;
     // 检查路径上的棋子数量
     if (fromPos.x === toPos.x) {
       const minY = Math.min(fromPos.y, toPos.y);
       const maxY = Math.max(fromPos.y, toPos.y);
       for (let y = minY + 1; y < maxY; y++) {
-        if (board[y][fromPos.x]) count++;
+        if (board[y][fromPos.x].hasOwnProperty("chess")) count++;
       }
     } else {
       const minX = Math.min(fromPos.x, toPos.x);
       const maxX = Math.max(fromPos.x, toPos.x);
       for (let x = minX + 1; x < maxX; x++) {
-        if (board[fromPos.y][x]) count++;
+        if (board[fromPos.y][x].hasOwnProperty("chess")) count++;
       }
     }
-    
     // 移动时不能有棋子，吃子时必须翻过一个棋子
-    return board[toPos.y][toPos.x] ? count === 1 : count === 0;
+    return board[toPos.y][toPos.x].hasOwnProperty("chess") ? count === 1 : count === 0;
   }
 
   // 兵/卒的移动规则
-  static BingRule(piece, toPos, fromPos) {
+  static BingRule(board, toPos, fromPos) {
     // 未过河
-    if(piece.side === piece.chess.side){
+    if(board[fromPos.y][fromPos.x].side === board[fromPos.y][fromPos.x].chess.side){
       // 过河前棋子不能左右走
       if(toPos.x !== fromPos.x ){
         return false;
       }
       // 棋子只能向前走
-      if(toPos.y - fromPos.y !== piece.chess.side){
+      if(toPos.y - fromPos.y !== board[fromPos.y][fromPos.x].chess.side){
         return false;
       }
     // 已过河
@@ -124,7 +119,7 @@ class ChessRules {
         return false;
       }
       // 棋子不能后退
-      if(((toPos.y - fromPos.y) !== piece.chess.side) && ((toPos.y - fromPos.y) !== 0) ){
+      if(((toPos.y - fromPos.y) !== board[fromPos.y][fromPos.x].chess.side) && ((toPos.y - fromPos.y) !== 0) ){
         return false;
       }
     }
