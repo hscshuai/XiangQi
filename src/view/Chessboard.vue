@@ -91,7 +91,11 @@ const pieceMovementRules = (cPiece,oPiece, c, o) => {
     if(!flag) return flag;
   }
   // 判断棋子的移动是否符合规则
-  return ChessRules[oPiece.chess.componentName + "Rule"](board.value, c, o);
+  flag = ChessRules[oPiece.chess.componentName + "Rule"](c, o, board.value);
+  if(falg && cPiece.hasOwnProperty("chess") && cPiece.chess.componentName === "Shuai"){
+    // 胜利
+  } 
+  return flag;
 }
 
 
