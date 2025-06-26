@@ -40,6 +40,8 @@ const checkGrid = (position) => {
   // console.log("🚀 ~ checkGrid ~ position:", position)
   cPosition.value = position;
 }
+// 当前应该行动的阵营
+let side = -1;
 // 选中棋子的格子
 const oPosition = ref(null)
 // 选中的棋子的dom元素
@@ -51,6 +53,7 @@ const checkChessPieces = (position,e) => {
     return;
   }
   if(chessPieces.value === null){
+    if(board.value[position.y][position.x].chess.side !== side)return;
     chessPieces.value = e.target;
     oPosition.value = position;
     changeCheckPiecesStyle(true)
@@ -58,9 +61,9 @@ const checkChessPieces = (position,e) => {
     document.addEventListener('mousemove', piecesMouseMove);
   }else{
     moveAPiece(cPosition.value, oPosition.value)
+    side = -side;
     changeCheckPiecesStyle(false)
     chessPieces.value = null
-
     // 移除事件监听器
     document.removeEventListener('mousemove', piecesMouseMove);
   }
@@ -92,8 +95,8 @@ const pieceMovementRules = (cPiece,oPiece, c, o) => {
   }
   // 判断棋子的移动是否符合规则
   flag = ChessRules[oPiece.chess.componentName + "Rule"](c, o, board.value);
-  if(falg && cPiece.hasOwnProperty("chess") && cPiece.chess.componentName === "Shuai"){
-    // 胜利
+  if(flag && cPiece.hasOwnProperty("chess") && cPiece.chess.componentName === "Shuai"){
+    // TODO 胜利
   } 
   return flag;
 }
