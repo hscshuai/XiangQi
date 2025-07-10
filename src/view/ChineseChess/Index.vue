@@ -1,16 +1,21 @@
 <template>
-  <div class="chessboard" @mouseleave="gridPosition = null">
-    <div class="across" v-for="(across, i) in board" :key="i">
-      <div class="point" :x="j" :y="i" v-for="(point, j) in across" :key="j"
-        @click="checkChessPieces({x:j,y:i}, $event)"
-        @mouseenter="checkGrid({x:j,y:i})"
-      >
-        <component
-        v-if="point.chess" 
-        :pieces="point" 
-        :is="getComponent(point.chess.componentName)" >
-        </component>
+  <div>
+    <div class="chessboard" @mouseleave="gridPosition = null">
+      <div class="across" v-for="(across, i) in board" :key="i">
+        <div class="point" :x="j" :y="i" v-for="(point, j) in across" :key="j"
+          @click="checkChessPieces({x:j,y:i}, $event)"
+          @mouseenter="checkGrid({x:j,y:i})"
+        >
+          <component
+          v-if="point.chess" 
+          :pieces="point" 
+          :is="getComponent(point.chess.componentName)" >
+          </component>
+        </div>
       </div>
+    </div>
+    <div>
+      <div>刷新</div>
     </div>
   </div>
 </template>
@@ -129,7 +134,7 @@ const changeCheckPiecesStyle = (flag) => {
   height: 900px;
   width: 900px;
   margin: auto;
-  background: url(./../assets/img/chessboard.jpg) center/100% 100%;
+  background: url(./../../assets/img/chessboard.jpg) center/100% 100%;
 }
 .across {
   display: flex;

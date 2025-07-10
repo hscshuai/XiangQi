@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import HelloWorld from './view/Chessboard.vue'
+import HelloWorld from './view/ChineseChess/Index.vue'
 
 </script>
 
